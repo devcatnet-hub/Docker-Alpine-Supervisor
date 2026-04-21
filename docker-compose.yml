@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+  alpine-supervisor:
+    image: deathwalker66/alpine-supervisor
+    container_name: DEV.Alpine-Supervisor
+    hostname: dev-alpine-supervisor  # Buena práctica añadir hostname
+    volumes:
+      - type: bind
+        source: /mnt/Dock/Com
+        target: /COM
+      - type: bind
+        source: ./SCP
+        target: /SCP
+      - type: bind
+        source: ./LOG
+        target: /var/log
+    ports:
+      - target: 22
+        published: 30422
+        protocol: tcp
+        mode: host  # Mejor rendimiento para SSH
+    networks:
+      - catnet
+    env_file: 
+      - .env
+    restart: unless-stopped  # Buena práctica para servicios
+    security_opt:
+      - no-new-privileges:true  # Mejor seguridad
+
+networks:
+  catnet:
+    name: catnet  # Definición explícita
+    external: true  # La red ya existe externamente
